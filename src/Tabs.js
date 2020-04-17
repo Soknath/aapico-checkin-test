@@ -8,7 +8,9 @@ import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import SettingsIcon from '@material-ui/icons/Settings';
 // import Loading from './Loading';
 
+import CardView from './Checkin/CardView';
 import CheckForm from './Checkin/CheckForm';
+import TakePhoto from './Checkin/TakePhoto';
 import Employees from './Employee/employeeViews';
 import Companies from './Company/companyViews';
 import EmployeeDetails from './Employee/employeeDetails';
@@ -86,7 +88,16 @@ class TabView extends Component {
   render(){
     const { classes } = this.props;
     const { data, filterData, companies, companyData} = this.state;
-    let components = {"companies": <Companies data={companyData}/>, "employees": <Employees filterData={filterData} companies={companies} data={data}/>,"employeeDetails": <EmployeeDetails />, "companyDetails": <CompanyDetails />, "checkin" : <CheckForm />, "personalinfo" : <PersonalInfo />};
+      let components = {
+        "companies": <Companies data={companyData}/>, 
+        "employees": <Employees filterData={filterData} companies={companies} data={data}/>,
+        "employeeDetails": <EmployeeDetails />, 
+        "companyDetails": <CompanyDetails />, 
+        "checkin" : <CheckForm />, 
+        "personalinfo" : <PersonalInfo />,
+        "takePhoto" : <TakePhoto />,
+        "CardView" : <CardView />
+      };
     let componentName = history.location.pathname.replace('/', '')||'companies';
     let activeComponent = components[componentName];
     if (!data || !companyData){return(<Loading />)};

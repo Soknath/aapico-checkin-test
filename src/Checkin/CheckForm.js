@@ -1,21 +1,25 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
+import Fab from '@material-ui/core/Fab';
 import { withStyles, useTheme } from '@material-ui/core/styles';
 import ToggleButton from '@material-ui/lab/ToggleButton';
+import NavigationIcon from '@material-ui/icons/Navigation';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import MapGL, {FlyToInterpolator, NavigationControl, GeolocateControl } from 'react-map-gl';
-import IconButton from '@material-ui/core/IconButton';
-import RoomIcon from '@material-ui/icons/Room';
 import Card from '@material-ui/core/Card';
 import Motion from '../motion';
 import AppBar from '../appBar';
+import history from '../history';
 import { Typography } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import Snackbar from '@material-ui/core/Snackbar';
+import Drawer from './Drawer';
+import Today from "./Today";
 
 const styles = theme => ({
     appBarSpacer: theme.mixins.toolbar,
     checkinButton: {
         position: 'absolute',
-        margin: 'auto',
         bottom: 65
     },
     content: {
@@ -29,7 +33,10 @@ const styles = theme => ({
       paddingBottom: theme.spacing(1),
       padding: 10,
       textAlign: 'center'
-    }
+    },
+    margin: {
+      margin: theme.spacing(1),
+    },
   });
 
 const geolocateStyle = {
@@ -54,6 +61,14 @@ const navRightStyle = {
   padding: '10px'
 };
 
+const todayListStyle = {
+  position: 'absolute',
+  top: 105,
+  right: 0,
+  padding: '10px',
+  height: 100
+};
+
 class CheckForm extends React.Component {
   constructor(props){
     super(props);
@@ -66,7 +81,9 @@ class CheckForm extends React.Component {
         longitude: 100,
         zoom: 6,
         bearing: 0,
-        pitch: 0
+        pitch: 0,
+        alert: false,
+        drawerOpen: false
       }
     };
   }
@@ -98,13 +115,20 @@ class CheckForm extends React.Component {
     this.setState({viewport});
   }
 
+  openDrawer = () => {
+    this.setState({
+      openDrawer: !this.state.openDrawer
+    })
+  }
 
   render() {
-    const {viewport, settings} = this.state;
+    const {viewport, settings, openDrawer} = this.state;
     const {classes} = this.props;
+    let user = localStorage.getItem('user');
     return (
       <Motion>
-      <AppBar info={true} history={true} title={"CHECK IN"}/><div className={classes.appBarSpacer}/>
+      {openDrawer?<Drawer drawerClose={() => this.openDrawer()}/>:null}
+      <AppBar info={true} history={true} drawerOpen={() => this.openDrawer()} title={"CHECK IN"}/><div className={classes.appBarSpacer}/>
       <div style={{height: 'calc(100%-56x)'}}>
         <MapGL
           attributionControl={true}
@@ -151,19 +175,36 @@ class CheckForm extends React.Component {
           </Grid>
         </Grid>
         </div>
-        
+        <Snackbar open={this.state.alert} anchorOrigin={{ vertical:'top', horizontal:'right' }}
+          autoHideDuration={6000} 
+          onClose={() => this.setState({alert:false})} >
+        <Alert onClose={() => this.setState({alert:false})} severity="error">
+          Please make sure you have created your profile — <strong>Profile not found!</strong>
+        </Alert></Snackbar>
         <Grid container justify="center" className={classes.checkinButton}>
-        <Card ><div className={classes.details}>
-        <div className={classes.controls}>
-        <Typography><b>In</b> <br /></Typography>
-        <IconButton color="primary" aria-label="chec-in/check-out" >
-            <RoomIcon style={{fontSize: 40}}/>
-        </IconButton>
-        <Typography><b>Out</b><br /></Typography>
-        </div>
-      </div>
-        </Card>
+          <Fab
+            variant="extended"
+            size="medium"
+            color="primary"
+            aria-label="add"
+            className={classes.margin}
+            onClick={()=> {
+              if(user){
+                history.push({
+                pathname: './takePhoto'})
+              } else {
+                this.setState({alert: true})
+              }
+            }
+            }
+          >
+            <NavigationIcon className={classes.extendedIcon} />
+            Check In
+          </Fab>
         </Grid>
+        <div style={todayListStyle}>
+          <Today />
+        </div>
 
       </div>
       </Motion>

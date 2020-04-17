@@ -21,7 +21,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2),
   },
   rightSwitch: {
-    marginLeft: 'auto'
+    marginLeft: 'auto',
+    color: '#FFFFFF'
   }
 }));
 
@@ -107,7 +108,7 @@ export default function DenseAppBar(props) {
           </IconButton>
         :null}
           <Typography variant="h6" color="inherit">
-            {props.title?props.title:"AAPICO SMART DIRECTORY"}
+            {props.title?props.title:"SMART DIRECTORY"}
           </Typography>
           <Button id="setup_button" onClick={()=>installApp()}>Installer</Button>
         {props.company?
@@ -123,7 +124,10 @@ export default function DenseAppBar(props) {
           </div>
         :null}
         {props.history?
-          <div className={classes.rightSwitch}><EventNoteIcon /></div>:null}
+          <Button onClick={() => props.drawerOpen()} className={classes.rightSwitch} startIcon={<EventNoteIcon />} >
+            <p>{localStorage.getItem('user')?'ID: ' + JSON.parse(localStorage.getItem('user')).empID:null}</p>
+          </Button>
+        :null}
         </Toolbar>
       </AppBar>
       <Dialog open={open} onClose={handleClose}/>

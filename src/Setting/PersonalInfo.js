@@ -12,6 +12,8 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from '@material-ui/pickers';
+import Snackbar from '@material-ui/core/Snackbar';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import * as yup from "yup";
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
@@ -33,13 +35,14 @@ const styles = theme => ({
   container: {
       padding: theme.spacing.unit * 2,
       maxWidth: 400,
-      margin: 'auto'
+      marginTop: 50
   }
 });
 
 function Register(props) {
+  let user = localStorage.getItem('user');
   const { handleSubmit, errors, control } = useForm({validationSchema: schema,
-  defaultValues: {
+  defaultValues: user?JSON.parse(user):{
     firstName: '',
     lastName: '',
     tel: '',
@@ -52,10 +55,15 @@ function Register(props) {
   console.log(errors);
   
   // The first commit of Material-UI
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [selectedDate, setSelectedDate] = React.useState(user?user.birthday:new Date());
+  const [alert, setAlert] = React.useState(false);
 
   const onSubmit = data => {
-    console.log(data);
+    console.log(JSON.stringify(errors))
+    if(Object.keys(errors).length == 0){
+      localStorage.setItem('user', JSON.stringify(data));
+      setAlert(true)
+    }
   }
   const handleDateChange = date => {
     setSelectedDate(date);
@@ -63,6 +71,13 @@ function Register(props) {
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
+
+    <Snackbar open={alert} anchorOrigin={{ vertical:'top', horizontal:'right' }}
+      autoHideDuration={6000} 
+      onClose={() => setAlert(false)} >
+    <Alert onClose={() => setAlert(false)} >
+      Your profile have been save succcesfully — <strong>Congratulation!</strong>
+    </Alert></Snackbar>
     <Paper className={classes.container}> 
     <br />
     <Grid container justify="center" >
@@ -152,7 +167,7 @@ function Register(props) {
                 />
               </RadioGroup>
             }
-            name="RadioGroup"
+            name="gender"
             control={control}
             defaultValue="male"
           />
@@ -198,7 +213,8 @@ function Register(props) {
       <hr />
       <Grid container justify="flex-end" spacing={2}>
         <Grid item>
-            <Button type="submit" variant="contained" color="secondary" style={{ textTransform: "none" }}size="small" >Verify & Create Account</Button>
+            <Button type="submit" variant="contained" color="primary" 
+            style={{ textTransform: "none" }}size="small" >SAVE</Button>
         </Grid>
       </Grid>
       {/* <input type="submit" /> */}
