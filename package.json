@@ -12,6 +12,7 @@
     "babel-loader": "^8.0.5",
     "date-fns": "^2.11.1",
     "framer-motion": "^1.7.0",
+    "gh-pages": "^2.2.0",
     "moize": "^5.4.5",
     "node-pre-gyp": "^0.14.0",
     "prevent-pull-refresh": "^1.0.5",
@@ -56,5 +57,5 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "homepage":"https://soknath.github.com/aapico-checkin"
+  "homepage": "https://soknath.github.com/aapico-checkin"
 }
