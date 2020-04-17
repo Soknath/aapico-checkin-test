@@ -48,6 +48,7 @@
     "eject": "react-app-rewired eject",
     "deploy": "gh-pages -d build"
   },
+  "homepage": "https://soknath.github.com/aapico-checkin",
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -57,5 +58,4 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "homepage": "https://soknath.github.com/aapico-checkin"
 }
