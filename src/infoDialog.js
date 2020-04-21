@@ -38,7 +38,7 @@ export default function AlertDialogSlide(props) {
                 fgColor="#000000"
                 level="Q"
                 style={{ width: 256 }}
-                value="http://aapico-smart-connect.powermap.live"
+                value="http://powermap.in.th"
             />
           </DialogContentText>
         </DialogContent>
