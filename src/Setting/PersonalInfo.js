@@ -13,6 +13,11 @@ import {
   KeyboardDatePicker
 } from '@material-ui/pickers';
 import Snackbar from '@material-ui/core/Snackbar';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import * as yup from "yup";
@@ -39,6 +44,7 @@ const styles = theme => ({
   }
 });
 
+const companies = ["AITS", "AH", "AHP"];
 function Register(props) {
   let user = localStorage.getItem('user');
   const { handleSubmit, errors, control } = useForm({validationSchema: schema,
@@ -49,13 +55,15 @@ function Register(props) {
     email: '',
     gender: 'male',
     empID: '',
-    birthday: new Date()
+    birthday: new Date(),
+    department: '',
+    company: ''
   }});
   const { classes } = props;
-  console.log(errors);
   
   // The first commit of Material-UI
   const [selectedDate, setSelectedDate] = React.useState(user?user.birthday:new Date());
+  const [company, setCompany] = React.useState("AITS");
   const [alert, setAlert] = React.useState(false);
 
   const onSubmit = data => {
@@ -67,6 +75,9 @@ function Register(props) {
   }
   const handleDateChange = date => {
     setSelectedDate(date);
+  };
+  const handleChange = company => {
+    setCompany(company);
   };
 
   return (
@@ -209,6 +220,43 @@ function Register(props) {
           />
           } 
           name="birthday" defaultValue={selectedDate} control={control}/>
+      </Grid>
+      <Grid container justify="flex-end" spacing={2}>
+        <Grid item xs={6}>
+          <Controller as={
+            <TextField
+              label='Deaprtment'
+              variant='outlined'
+              margin='normal'
+              InputLabelProps={{
+                shrink: true
+              }}
+              required
+              size="small"
+            />
+            } 
+            type="text" name="department" control={control}/>
+        </Grid> 
+        <Grid item xs={6}>
+        <Controller as={
+            <FormControl variant="outlined" className={classes.formControl} fullWidth size="small" >
+              <InputLabel id="demo-simple-select-outlined-label">Company</InputLabel>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                value={company}
+                onChange={handleChange}
+                label="Company"
+              >
+                {companies.map((comp, index) => (
+                  <MenuItem value={comp} key={index}>{comp}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          } 
+          style={{marginTop: 16}}
+          name="company" defaultValue={"AITS"} control={control}/>
+      </Grid>
       </Grid>
       <hr />
       <Grid container justify="flex-end" spacing={2}>

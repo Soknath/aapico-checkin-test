@@ -38,7 +38,7 @@ class TabView extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      componentName: props.location.pathname?props.location.pathname.replace('/',''):'companies',
+      componentName: props.location.pathname?props.location.pathname.replace('/',''):'checkin',
       showInstallMessage: false,
       data: null,
       filterData: null,
@@ -47,30 +47,30 @@ class TabView extends Component {
     }
   }
 
-  componentDidMount() {
-    Tabletop.init({
-      key: '18g3_Nasyq-dFwFqnilywZSWwVBKP5r5BUnLA0j5AEHg',
-      callback: googleData => {
-        let companies = [...new Set(googleData.map(({company})=>company))]
-        this.setState({
-          data: googleData,
-          filterData: googleData,
-          companies: ['All', ...companies]
-        })
-      },
-      simpleSheet: true
-    });
+  // componentDidMount() {
+  //   Tabletop.init({
+  //     key: '18g3_Nasyq-dFwFqnilywZSWwVBKP5r5BUnLA0j5AEHg',
+  //     callback: googleData => {
+  //       let companies = [...new Set(googleData.map(({company})=>company))]
+  //       this.setState({
+  //         data: googleData,
+  //         filterData: googleData,
+  //         companies: ['All', ...companies]
+  //       })
+  //     },
+  //     simpleSheet: true
+  //   });
     
-    Tabletop.init({
-      key: '1JHSCA1kWtmrgWIIGgVtOgjkBfw-IBV_gS0ZDvrDxwg8',
-      callback: googleData => {
-        this.setState({
-          companyData: googleData
-        })
-      },
-      simpleSheet: true
-    });
-  }
+  //   Tabletop.init({
+  //     key: '1JHSCA1kWtmrgWIIGgVtOgjkBfw-IBV_gS0ZDvrDxwg8',
+  //     callback: googleData => {
+  //       this.setState({
+  //         companyData: googleData
+  //       })
+  //     },
+  //     simpleSheet: true
+  //   });
+  // }
 
   handleChange = (event, newValue) => {
     this.setState({
@@ -98,20 +98,20 @@ class TabView extends Component {
         "takePhoto" : <TakePhoto />,
         "CardView" : <CardView />
       };
-    let componentName = history.location.pathname.replace('/', '')||'companies';
+    let componentName = history.location.pathname.replace('/', '')||'checkin';
     let activeComponent = components[componentName];
-    if (!data || !companyData){return(<Loading />)};
+    // if (!data || !companyData){return(<Loading />)};
     return (
     <>
       {activeComponent}
       <div className={classes.appBarSpacer}/>
       <BottomNavigation value={this.state.componentName} onChange={this.handleChange} className={classes.stickToBottom} >
-        <BottomNavigationAction label="AAPICO" value="companies" icon={<HomeWorkIcon />}/>
-        <BottomNavigationAction label="Employees" value="employees" icon={<PeopleIcon />} />
+        {/* <BottomNavigationAction label="AAPICO" value="companies" icon={<HomeWorkIcon />}/>
+        <BottomNavigationAction label="Employees" value="employees" icon={<PeopleIcon />} /> */}
         <BottomNavigationAction label="Check-in" value="checkin" icon={<RoomIcon />} />
         <BottomNavigationAction label="Setting" value="personalinfo" icon={<SettingsIcon />} />
       </BottomNavigation>
-      <PWAPrompt promptOnVisit={1} timesToShow={3} copyClosePrompt="Close" permanentlyHideOnDismiss={false}/>
+      {/* <PWAPrompt promptOnVisit={1} timesToShow={3} copyClosePrompt="Close" permanentlyHideOnDismiss={false}/> */}
       </>
     );
   }

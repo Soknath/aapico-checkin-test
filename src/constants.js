@@ -1,4 +1,4 @@
-const API_URL = `https://bb0291ce.ngrok.io`
+const API_URL = `https://backend.powermap.live`
 
 
 export {

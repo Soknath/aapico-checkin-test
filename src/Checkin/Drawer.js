@@ -77,7 +77,7 @@ export default function SwipeableTemporaryDrawer(props) {
           <>
           <ListItem button key={text}>
             <ListItemAvatar>
-              <Avatar alt={text.firstName} src={API_URL+"/"+text.avatar.url} />
+              <Avatar alt={text.firstName} src={API_URL+text.avatar.url} />
             </ListItemAvatar>
             <ListItemText primary={new Date(text.createdAt).toLocaleDateString()} secondary={new Date(text.createdAt).toLocaleTimeString()}/>
           </ListItem>

@@ -81,7 +81,9 @@ export default function MediaCard(props) {
             "gender": user.gender,
             "latitude": state.latitude,
             "longitude": state.longitude,
-            "address": Object.values(userAddress).join (" ")
+            "address": Object.values(userAddress).join (" "),
+            "department": user.department,
+            "company": user.company
         }));
 
         
