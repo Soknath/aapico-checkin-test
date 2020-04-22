@@ -1,6 +1,6 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import Fab from '@material-ui/core/Fab';
+import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import { withStyles, useTheme } from '@material-ui/core/styles';
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -20,7 +20,7 @@ const styles = theme => ({
     appBarSpacer: theme.mixins.toolbar,
     checkinButton: {
         position: 'absolute',
-        bottom: 100
+        bottom: 60
     },
     content: {
       display: 'flex',
@@ -39,8 +39,7 @@ const styles = theme => ({
     },
     large: {
       width: theme.spacing(10),
-      height: theme.spacing(10),
-      marginBottom: theme.spacing(4),
+      height: theme.spacing(10)
     }
   });
 
@@ -186,22 +185,17 @@ class CheckForm extends React.Component {
           Please make sure you have created your profile — <strong>Profile not found!</strong>
         </Alert></Snackbar>
         <Grid container justify="center" className={classes.checkinButton}>
-          <Fab
-            size="medium"
-            color="primary"
-            aria-label="add"
-            onClick={()=> {
-              if(user){
-                history.push({
-                pathname: './CardView'})
-              } else {
-                this.setState({alert: true})
-              }
+          <IconButton onClick={()=> {
+            if(user){
+              history.push({
+              pathname: './CardView'})
+            } else {
+              this.setState({alert: true})
             }
-            }
+          }}
           >
             <Avatar alt="Checkin" src="/aapico-checkin/images/Button.png" className={classes.large} />
-          </Fab>
+          </IconButton>
         </Grid>
         <div style={todayListStyle}>
           <Today />

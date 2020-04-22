@@ -1,6 +1,6 @@
 {
-  "short_name": "AAPICO SMART CONNECT",
-  "name": "AAPICO SMART CONNECT",
+  "short_name": "CHECK-IN",
+  "name": "AAPICO CHECK-IN",
   "icons": [
     {
       "src": "/images/icons-192.png",
@@ -8,12 +8,12 @@
       "sizes": "192x192"
     },
     {
-      "src": "/images/icons-512.png",
+      "src": "/images/icons-192.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
-  "start_url": "/index.html",
+  "start_url": "/aapico-checkin",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "white",

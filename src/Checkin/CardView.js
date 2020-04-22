@@ -16,6 +16,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import * as loadImage from 'blueimp-load-image';
 import {useGeolocation} from './GPSBackground';
 import {API_URL} from '../constants';
 import Loading from '../Loading';
@@ -82,7 +83,7 @@ function MediaCard(props) {
         async function fetchData() {
             try {
                 let address = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${state.latitude}&lon=${state.longitude}&accept-language=th`).then(res => res.json());
-                setUserAddress(address.address.splice(2));
+                setUserAddress(address.address);
             } catch (error) {
                 console.log(error)
             }
@@ -92,12 +93,22 @@ function MediaCard(props) {
 
     const getPhoto = (e) => {
         console.log(e.target.files[0]);
-        resize(e.target.files[0], 1200, 1200, function (resizedDataUrl) {
-            let blob = dataURItoBlob(resizedDataUrl);
-            let file = new File( [blob], 'selfie.jpg', { type: 'image/jpeg' } )
-            setFile(file)
-        });
-        setFile(e.target.files[0])
+        // resize(e.target.files[0], 1200, 1200, async function (resizedDataUrl) {
+        //     let blob = dataURItoBlob(resizedDataUrl);
+        //     let file = new File( [blob], 'selfie.jpg', { type: 'image/jpeg' } )
+        //     setFile(file);
+        // });
+        loadImage(
+            e.target.files[0],
+            function (canvas) {
+                let dataURL = canvas.toDataURL()
+                let blob = dataURItoBlob(dataURL);
+                let file = new File( [blob], 'selfie.jpg', { type: 'image/jpeg' } )
+                setFile(file);
+            },
+            { maxWidth: 600, orientation: true} // Options
+        );
+        
     }
 
     function resize (file, maxWidth, maxHeight, fn) {
@@ -157,7 +168,7 @@ function MediaCard(props) {
                 "gender": user.gender,
                 "latitude": state.latitude,
                 "longitude": state.longitude,
-                "address": Object.values(userAddress).join (" "),
+                "address": Object.values(userAddress).splice(1).join (" "),
                 "department": user.department,
                 "company": user.company
             }));
@@ -176,7 +187,7 @@ function MediaCard(props) {
             }
             return content;
         } else {
-            alert('No picture found');
+            alert('Data is not complete');
             setLoading(false);
         }
     }
@@ -213,7 +224,7 @@ function MediaCard(props) {
                     <strong>{user.firstName + ' ' + user.lastName}</strong>
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                    Address: <strong>{Object.values(userAddress).join (" ")}</strong>
+                    Address: <strong>{Object.values(userAddress).splice(1).join (" ")}</strong>
                     <br />
                     Employment ID: {user.empID}
                     <br />
