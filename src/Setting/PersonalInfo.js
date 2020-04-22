@@ -12,6 +12,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from '@material-ui/pickers';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -31,6 +32,19 @@ const schema = yup.object().shape({
   empID: yup.string().required(),
   birthday: yup.string().required()
 });
+
+const formLabelsTheme = createMuiTheme({
+  overrides: {
+    MuiFormLabel: {
+      asterisk: {
+        color: '#db3131',
+        '&$error': {
+          color: '#db3131'
+        },
+      }
+    }
+  }
+})
 
 const styles = theme => ({
   button: { background: 'black' },
@@ -57,7 +71,7 @@ function Register(props) {
     empID: '',
     birthday: new Date(),
     department: '',
-    company: ''
+    company: 'AITS'
   }});
   const { classes } = props;
   
@@ -67,6 +81,7 @@ function Register(props) {
   const [alert, setAlert] = React.useState(false);
 
   const onSubmit = data => {
+    console.log(data)
     console.log(JSON.stringify(errors))
     if(Object.keys(errors).length == 0){
       localStorage.setItem('user', JSON.stringify(data));
@@ -81,6 +96,7 @@ function Register(props) {
   };
 
   return (
+  <MuiThemeProvider theme={formLabelsTheme}>
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
 
     <Snackbar open={alert} anchorOrigin={{ vertical:'top', horizontal:'right' }}
@@ -225,7 +241,7 @@ function Register(props) {
         <Grid item xs={6}>
           <Controller as={
             <TextField
-              label='Deaprtment'
+              label='Department'
               variant='outlined'
               margin='normal'
               InputLabelProps={{
@@ -262,7 +278,7 @@ function Register(props) {
       <Grid container justify="flex-end" spacing={2}>
         <Grid item>
             <Button type="submit" variant="contained" color="primary" 
-            style={{ textTransform: "none" }}size="small" >SAVE</Button>
+            style={{ textTransform: "none" }}size="small" >{user?'EDIT':'SAVE'}</Button>
         </Grid>
       </Grid>
       {/* <input type="submit" /> */}
@@ -270,6 +286,7 @@ function Register(props) {
       </form>
     </Paper>
     </MuiPickersUtilsProvider>
+  </MuiThemeProvider>
   );
 }
 

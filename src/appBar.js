@@ -97,19 +97,17 @@ export default function DenseAppBar(props) {
       <AppBar position="fixed">
         <Toolbar>
         {/* get back button from history */}
-        {props.info?
+        {/* {props.info?
           <IconButton onClick={handleClickOpen} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <InfoIcon />
           </IconButton>
-        :null}
+        :null} */}
         {props.back?
           <IconButton onClick={handleClickBack} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <ChevronLeftIcon />
           </IconButton>
         :null}
-          <Typography variant="h6" color="inherit">
-            {props.title?props.title:"SMART DIRECTORY"}
-          </Typography>
+          <img src="/aapico-checkin/images/Logo4.png" height="42" />
           <Button id="setup_button" onClick={()=>installApp()}>Installer</Button>
         {props.company?
           <div className={classes.rightSwitch}>

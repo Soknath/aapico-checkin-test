@@ -37,19 +37,23 @@ export default function SwipeableTemporaryDrawer(props) {
     right: true,
   });
   const [loading, setLoading] = useState(false);
-
+  const user = localStorage.getItem('user');
   const [data, setData] = useState(null);
   const startOfMonth = moment().startOf('month').format();
   useEffect(() => {
-    setLoading(true);
-    fetch(`${API_URL}/staff-locations?empID=${JSON.parse(localStorage.getItem('user')).empID}&createdAt_gte=${startOfMonth}`)
-      .then(res => res.json())
-      .then(response => {
-        console.log(response)
-        setData(response);
-        setLoading(false);
-      })
-      .catch(error => console.log(error));
+    if (user){
+      setLoading(true);
+      fetch(`${API_URL}/staff-locations?empID=${JSON.parse(user).empID}&createdAt_gte=${startOfMonth}`)
+        .then(res => res.json())
+        .then(response => {
+          console.log(response)
+          setData(response);
+          setLoading(false);
+        })
+        .catch(error => console.log(error));
+    } else {
+      alert ('No user profile found')
+    }
   }, []);
 
   const toggleDrawer = (anchor, open) => (event) => {
@@ -79,7 +83,7 @@ export default function SwipeableTemporaryDrawer(props) {
             <ListItemAvatar>
               <Avatar alt={text.firstName} src={API_URL+text.avatar.url} />
             </ListItemAvatar>
-            <ListItemText primary={new Date(text.createdAt).toLocaleDateString()} secondary={new Date(text.createdAt).toLocaleTimeString()}/>
+            <ListItemText primary={new Date(text.createdAt).toLocaleDateString()+"-"+new Date(text.createdAt).toLocaleTimeString()} secondary={text.address}/>
           </ListItem>
           <Divider variant="inset" component="li" />
           </>

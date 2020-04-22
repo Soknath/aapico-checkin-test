@@ -1,6 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
+import Avatar from '@material-ui/core/Avatar';
 import { withStyles, useTheme } from '@material-ui/core/styles';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import NavigationIcon from '@material-ui/icons/Navigation';
@@ -10,7 +11,6 @@ import Card from '@material-ui/core/Card';
 import Motion from '../motion';
 import AppBar from '../appBar';
 import history from '../history';
-import { Typography } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import Drawer from './Drawer';
@@ -20,7 +20,7 @@ const styles = theme => ({
     appBarSpacer: theme.mixins.toolbar,
     checkinButton: {
         position: 'absolute',
-        bottom: 65
+        bottom: 100
     },
     content: {
       display: 'flex',
@@ -35,8 +35,13 @@ const styles = theme => ({
       textAlign: 'center'
     },
     margin: {
-      margin: theme.spacing(1),
+      margin: theme.spacing(2),
     },
+    large: {
+      width: theme.spacing(10),
+      height: theme.spacing(10),
+      marginBottom: theme.spacing(4),
+    }
   });
 
 const geolocateStyle = {
@@ -94,10 +99,10 @@ class CheckForm extends React.Component {
     });
   };
 
-  _onViewportChange = viewport =>
-    this.setState({
-      viewport: {...this.state.viewport, ...viewport}
-    });
+  _onViewportChange = viewport =>{
+    const {width, height, ...etc} = viewport
+    this.setState({viewport: etc})
+  }
 
   _goToViewport = (company) => {
     this.setState({popupInfo: company});
@@ -111,6 +116,7 @@ class CheckForm extends React.Component {
       }
     });
   };
+
   _updateViewport = (viewport) => {
     this.setState({viewport});
   }
@@ -120,7 +126,6 @@ class CheckForm extends React.Component {
       openDrawer: !this.state.openDrawer
     })
   }
-
   render() {
     const {viewport, settings, openDrawer} = this.state;
     const {classes} = this.props;
@@ -129,7 +134,7 @@ class CheckForm extends React.Component {
       <Motion>
       {openDrawer?<Drawer drawerClose={() => this.openDrawer()}/>:null}
       <AppBar info={true} history={true} drawerOpen={() => this.openDrawer()} title={"CHECK IN"}/><div className={classes.appBarSpacer}/>
-      <div style={{height: 'calc(100%-56x)'}}>
+      <div>
         <MapGL
           attributionControl={true}
           mapOptions={
@@ -138,9 +143,8 @@ class CheckForm extends React.Component {
             }
           }
           {...viewport}
-          {...settings}
-          width="100vw"
-          height="93vh"
+          width="100%"
+          height={'calc(100vh - 120px)'}
           mapStyle={this.state.language ==='en'?
             "https://search.map.powermap.in.th/api/v2/map/vtile/styles?name=thailand_en&access_token=b378c575291af30a29f59919fd7e7e4c012d45c4"
             :"https://search.map.powermap.in.th/api/v2/map/vtile/styles?name=thailand_th&access_token=b378c575291af30a29f59919fd7e7e4c012d45c4"
@@ -149,18 +153,18 @@ class CheckForm extends React.Component {
           dragToRotate={false}
           // mapboxApiAccessToken={MAPBOX_TOKEN}
         >
-          
         <GeolocateControl
           style={geolocateStyle}
           positionOptions={{enableHighAccuracy: false}}
           trackUserLocation={true}
           onViewportChange={this._updateViewport}
+          fitBoundsOptions={{maxZoom: 15}}
         />
         <div style={navStyle}>
           <NavigationControl showCompass={false}/>
         </div>
         </MapGL>
-        
+          
         <div style={navRightStyle}>
         <Grid container className="language-control-panel" spacing={2} direction="column">
           <Grid item>
@@ -183,23 +187,20 @@ class CheckForm extends React.Component {
         </Alert></Snackbar>
         <Grid container justify="center" className={classes.checkinButton}>
           <Fab
-            variant="extended"
             size="medium"
             color="primary"
             aria-label="add"
-            className={classes.margin}
             onClick={()=> {
               if(user){
                 history.push({
-                pathname: './takePhoto'})
+                pathname: './CardView'})
               } else {
                 this.setState({alert: true})
               }
             }
             }
           >
-            <NavigationIcon className={classes.extendedIcon} />
-            Check In
+            <Avatar alt="Checkin" src="/aapico-checkin/images/Button.png" className={classes.large} />
           </Fab>
         </Grid>
         <div style={todayListStyle}>

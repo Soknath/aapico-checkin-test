@@ -10,7 +10,6 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 import CardView from './Checkin/CardView';
 import CheckForm from './Checkin/CheckForm';
-import TakePhoto from './Checkin/TakePhoto';
 import Employees from './Employee/employeeViews';
 import Companies from './Company/companyViews';
 import EmployeeDetails from './Employee/employeeDetails';
@@ -37,14 +36,15 @@ const styles = theme => ({
 class TabView extends Component {
   constructor(props) {
     super(props)
+    let user = localStorage.getItem('user');
     this.state = {
-      componentName: props.location.pathname?props.location.pathname.replace('/',''):'checkin',
+      componentName: !user?'personalinfo':'checkin',
       showInstallMessage: false,
       data: null,
       filterData: null,
       companies: null,
       companyData: null
-    }
+    };
   }
 
   // componentDidMount() {
@@ -87,7 +87,7 @@ class TabView extends Component {
 
   render(){
     const { classes } = this.props;
-    const { data, filterData, companies, companyData} = this.state;
+    const { data, filterData, companies, companyData, componentName} = this.state;
       let components = {
         "companies": <Companies data={companyData}/>, 
         "employees": <Employees filterData={filterData} companies={companies} data={data}/>,
@@ -95,10 +95,8 @@ class TabView extends Component {
         "companyDetails": <CompanyDetails />, 
         "checkin" : <CheckForm />, 
         "personalinfo" : <PersonalInfo />,
-        "takePhoto" : <TakePhoto />,
         "CardView" : <CardView />
       };
-    let componentName = history.location.pathname.replace('/', '')||'checkin';
     let activeComponent = components[componentName];
     // if (!data || !companyData){return(<Loading />)};
     return (
@@ -109,9 +107,9 @@ class TabView extends Component {
         {/* <BottomNavigationAction label="AAPICO" value="companies" icon={<HomeWorkIcon />}/>
         <BottomNavigationAction label="Employees" value="employees" icon={<PeopleIcon />} /> */}
         <BottomNavigationAction label="Check-in" value="checkin" icon={<RoomIcon />} />
-        <BottomNavigationAction label="Setting" value="personalinfo" icon={<SettingsIcon />} />
+        <BottomNavigationAction label="Register" value="personalinfo" icon={<SettingsIcon />} />
       </BottomNavigation>
-      {/* <PWAPrompt promptOnVisit={1} timesToShow={3} copyClosePrompt="Close" permanentlyHideOnDismiss={false}/> */}
+      <PWAPrompt promptOnVisit={1} timesToShow={3} copyClosePrompt="Close" permanentlyHideOnDismiss={false}/>
       </>
     );
   }

@@ -26,7 +26,6 @@ const useStyles = makeStyles(theme => ({
   media: {
     height: 140,
     paddingTop: '56.25%', // 16:9
-    // backgroundImage: './images/male-placeholder.jpg'
   },
   appBarSpacer: theme.mixins.toolbar,
   rightButton: {

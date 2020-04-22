@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import Divider from '@material-ui/core/Divider';
 import history from '../history';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '../appBar';
@@ -19,26 +20,51 @@ import {useGeolocation} from './GPSBackground';
 import {API_URL} from '../constants';
 import Loading from '../Loading';
 
-const useStyles = makeStyles({
-  root: {
-    width: 450,
-    marginTop: 65
-  },
-  media: {
-    height: 300,
-  },
+const styles = theme => ({
+    root: {
+      width: 300,
+    },
+    media: {
+      height: 300,
+    },
+    appBarSpacer: theme.mixins.toolbar,
+    btnWrapper: {
+      position: 'relative',
+      overflow: 'hidden',
+      display: 'inline-block',
+      margin: 'auto'
+    },
+    btn: {
+      border: '2px solid gray',
+      color: 'gray',
+      backgroundColor: 'white',
+      padding: '8px 20px',
+      borderRadius: '8px',
+      fontSize: '20px',
+      fontWeight: 'bold'
+    },
+    file: {
+      fontSize: '100px',
+      position: 'absolute',
+      left: '0',
+      top: '0',
+      opacity: '0'
+
+    }
 });
-export default function MediaCard(props) {
-    const classes = useStyles();
+
+function MediaCard(props) {
+    const {classes} = props;
     const state = useGeolocation();
     let user = JSON.parse(localStorage.getItem('user'));
-    const { dataUri } = history.location.state;
     const [userAddress, setUserAddress] = useState("");
     const [open, setOpen] = React.useState(false);
     const [error, setError] = React.useState(null);
+    const [file, setFile] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
+    const fileRef = React.useRef(null);
 
-    const handleClose = () => {
+;    const handleClose = () => {
         setOpen(false);
     };
 
@@ -56,7 +82,7 @@ export default function MediaCard(props) {
         async function fetchData() {
             try {
                 let address = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${state.latitude}&lon=${state.longitude}&accept-language=th`).then(res => res.json());
-                setUserAddress(address.address);
+                setUserAddress(address.address.splice(2));
             } catch (error) {
                 console.log(error)
             }
@@ -64,71 +90,129 @@ export default function MediaCard(props) {
         if (state.latitude && state.longitude && !userAddress) fetchData();
     })
 
-  async function submitData () {
+    const getPhoto = (e) => {
+        console.log(e.target.files[0]);
+        resize(e.target.files[0], 1200, 1200, function (resizedDataUrl) {
+            let blob = dataURItoBlob(resizedDataUrl);
+            let file = new File( [blob], 'selfie.jpg', { type: 'image/jpeg' } )
+            setFile(file)
+        });
+        setFile(e.target.files[0])
+    }
+
+    function resize (file, maxWidth, maxHeight, fn) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (event) {
+            var dataUrl = event.target.result;
+    
+            var image = new Image();
+            image.src = dataUrl;
+            image.onload = function () {
+                var resizedDataUrl = resizeImage(image, maxWidth, maxHeight, 0.7);
+                fn(resizedDataUrl);
+            };
+        };
+    }
+    
+    function resizeImage(image, maxWidth, maxHeight, quality) {
+        var canvas = document.createElement('canvas');
+    
+        var width = image.width;
+        var height = image.height;
+    
+        if (width > height) {
+            if (width > maxWidth) {
+                height = Math.round(height * maxWidth / width);
+                width = maxWidth;
+            }
+        } else {
+            if (height > maxHeight) {
+                width = Math.round(width * maxHeight / height);
+                height = maxHeight;
+            }
+        }
+    
+        canvas.width = width;
+        canvas.height = height;
+    
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0, width, height);
+        return canvas.toDataURL("image/jpeg", quality);
+    }
+    
+    async function submitData () {
         // alert(JSON.stringify(user));
         setLoading(true)
         let formData = new FormData();
-        let blob = dataURItoBlob(dataUri);
-        let file = new File( [blob], 'selfie.jpg', { type: 'image/jpeg' } )
-        formData.append("files.avatar", file);
-        formData.append("data", JSON.stringify({
-            "empID": user.empID,
-            "lastName": user.lastName,
-            "firstName": user.firstName,
-            "birthday": new Date(user.birthday),
-            "tel": user.tel,
-            "email": user.email,
-            "gender": user.gender,
-            "latitude": state.latitude,
-            "longitude": state.longitude,
-            "address": Object.values(userAddress).join (" "),
-            "department": user.department,
-            "company": user.company
-        }));
+        if(file && state.latitude && userAddress){
+            formData.append("files.avatar", file);
+            formData.append("data", JSON.stringify({
+                "empID": user.empID,
+                "lastName": user.lastName,
+                "firstName": user.firstName,
+                "birthday": new Date(user.birthday),
+                "tel": user.tel,
+                "email": user.email,
+                "gender": user.gender,
+                "latitude": state.latitude,
+                "longitude": state.longitude,
+                "address": Object.values(userAddress).join (" "),
+                "department": user.department,
+                "company": user.company
+            }));
+            const rawResponse = await fetch(`${API_URL}/staff-locations`,{
+                method: 'POST',
+                body: formData
+            });
 
-        
-        const rawResponse = await fetch(`${API_URL}/staff-locations`,{
-            method: 'POST',
-            body: formData
-        });
-
-        const content = await rawResponse.json();
-        // alert(JSON.stringify(content));
-        setLoading(false);
-        if (content.statusCode && content.statusCode !== 200) {
-            return setError(content.error)
+            const content = await rawResponse.json();
+            // alert(JSON.stringify(content));
+            setLoading(false);
+            if (content.statusCode && content.statusCode !== 200) {
+                return setError(content.error)
+            } else {
+                return setOpen(true)
+            }
+            return content;
         } else {
-            return setOpen(true)
+            alert('No picture found');
+            setLoading(false);
         }
-        return content;
-  }
+    }
 
   if (loading) {return(<Loading />)} 
   else {
     return (
         <>
-            <AppBar back={true} title={"Re-Check & Submit"}/>
-            
+            <AppBar back={true} title={"Submit Checkin Data"}/>
+            <div className={classes.appBarSpacer}/>
+            <br />
             <Grid container 
                 justify="center"
                 alignItems="center"
             >
             <Card className={classes.root}>
             <CardActionArea>
+                <div onClick={() => fileRef.current.click()} >
                 <CardMedia
+                    component="img"
                     className={classes.media}
-                    image={dataUri}
-                    title="Contemplative Reptile"
+                    image={file?URL.createObjectURL(file):"/aapico-checkin/images/placeholder.png"}
+                    title="Profile"
+                /></div>
+                <input type="file" ref={fileRef} className={classes.file} accept="image/x-png,image/jpeg,image/gif,image/png" 
+                    style={{visibility: 'hidden'}}
+                    onChange={(event)=> { 
+                        getPhoto(event) 
+                    }}
                 />
+                <Divider />
                 <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
                     <strong>{user.firstName + ' ' + user.lastName}</strong>
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                    Lat <strong>{state.latitude}</strong>
-                    <br />
-                    Lon <strong>{state.longitude}</strong>
-                    <br />
                     Address: <strong>{Object.values(userAddress).join (" ")}</strong>
                     <br />
                     Employment ID: {user.empID}
@@ -166,9 +250,6 @@ export default function MediaCard(props) {
                 </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                <Button onClick={handleClose} color="primary">
-                    Close
-                </Button>
                 <Button onClick={() => {
                         setOpen(false);
                         return !error?history.push('./checkin'):null;
@@ -182,3 +263,7 @@ export default function MediaCard(props) {
         </>
     )};          
 }
+
+
+export default withStyles(styles)(MediaCard);
+
