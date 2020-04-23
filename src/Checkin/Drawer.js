@@ -43,7 +43,7 @@ export default function SwipeableTemporaryDrawer(props) {
   useEffect(() => {
     if (user){
       setLoading(true);
-      fetch(`${API_URL}/staff-locations?empID=${JSON.parse(user).empID}&createdAt_gte=${startOfMonth}`)
+      fetch(`${API_URL}/staff-locations?empID=${JSON.parse(user).empID}&createdAt_gte=${startOfMonth}&_sort=createdAt:DESC`)
         .then(res => res.json())
         .then(response => {
           console.log(response)

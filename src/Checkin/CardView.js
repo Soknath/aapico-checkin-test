@@ -100,8 +100,21 @@ function MediaCard(props) {
         // });
         loadImage(
             e.target.files[0],
-            function (canvas) {
-                let dataURL = canvas.toDataURL()
+            function (img) {
+                // Create an empty canvas element
+                var canvas = document.createElement("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+            
+                // Copy the image contents to the canvas
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+            
+                // Get the data-URL formatted image
+                // Firefox supports PNG and JPEG. You could check img.src to
+                // guess the original format, but be aware the using "image/jpg"
+                // will re-encode the image.
+                var dataURL = canvas.toDataURL("image/png");
                 let blob = dataURItoBlob(dataURL);
                 let file = new File( [blob], 'selfie.jpg', { type: 'image/jpeg' } )
                 setFile(file);
@@ -226,16 +239,11 @@ function MediaCard(props) {
                 <Typography variant="body2" color="textSecondary" component="p">
                     Address: <strong>{Object.values(userAddress).splice(1).join (" ")}</strong>
                     <br />
-                    Employment ID: {user.empID}
+                    ID: {user.empID} | Tel: {user.tel} 
                     <br />
-                    Gender: {user.gender}
-                    <br />
-                    Tel: {user.tel}
+                    Gender: {user.gender} | Birthday: {new Date(user.birthday).toLocaleDateString()}
                     <br />
                     Email: {user.email}
-                    <br />
-                    Birthday: {new Date(user.birthday).toLocaleDateString()}
-                    <br />
                 </Typography>
                 </CardContent>
             </CardActionArea>
