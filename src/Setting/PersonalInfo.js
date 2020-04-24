@@ -58,7 +58,7 @@ const styles = theme => ({
   }
 });
 
-const companies = ["AITS", "AH", "AHP"];
+const companies = ["AITS", "AH", "AHP", "AA", "AF", "AHT", "APB", "APR", "APC", "ASP", "AL", "AS", "EA", "AEC", "AERP"];
 function Register(props) {
   let user = localStorage.getItem('user');
   const { handleSubmit, errors, control } = useForm({validationSchema: schema,
@@ -83,7 +83,7 @@ function Register(props) {
   const onSubmit = data => {
     console.log(data)
     console.log(JSON.stringify(errors))
-    if(Object.keys(errors).length == 0){
+    if(Object.keys(errors).length === 0){
       localStorage.setItem('user', JSON.stringify(data));
       setAlert(true)
     }
@@ -92,9 +92,9 @@ function Register(props) {
     setSelectedDate(date);
   };
   const handleChange = company => {
-    setCompany(company);
+    setCompany(company.target.value);
   };
-
+  
   return (
   <MuiThemeProvider theme={formLabelsTheme}>
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -271,13 +271,13 @@ function Register(props) {
             </FormControl>
           } 
           style={{marginTop: 16}}
-          name="company" defaultValue={"AITS"} control={control}/>
+          name="company" control={control}/>
       </Grid>
       </Grid>
       <hr />
       <Grid container justify="flex-end" spacing={2}>
         <Grid item>
-            <Button type="submit" variant="contained" color="primary" 
+            <Button type="submit" variant="contained" color={user?"primary":"secondary"}
             style={{ textTransform: "none" }}size="small" >{user?'EDIT':'SAVE'}</Button>
         </Grid>
       </Grid>

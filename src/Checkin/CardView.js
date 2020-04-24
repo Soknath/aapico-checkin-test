@@ -18,9 +18,14 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import * as loadImage from 'blueimp-load-image';
 import {useGeolocation} from './GPSBackground';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import {API_URL} from '../constants';
 import Loading from '../Loading';
 
+const healths = ["healthy", "Sick (fever or cough or cold)", "Sick Covid-19"];
 const styles = theme => ({
     root: {
       width: 300,
@@ -64,8 +69,9 @@ function MediaCard(props) {
     const [file, setFile] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const fileRef = React.useRef(null);
+    const [health, setHealth] = React.useState("healthy");
 
-;    const handleClose = () => {
+    const handleClose = () => {
         setOpen(false);
     };
 
@@ -91,13 +97,12 @@ function MediaCard(props) {
         if (state.latitude && state.longitude && !userAddress) fetchData();
     })
 
+    const handleChangeHealth = health => {
+        setHealth(health.target.value);
+    };
+
     const getPhoto = (e) => {
         console.log(e.target.files[0]);
-        // resize(e.target.files[0], 1200, 1200, async function (resizedDataUrl) {
-        //     let blob = dataURItoBlob(resizedDataUrl);
-        //     let file = new File( [blob], 'selfie.jpg', { type: 'image/jpeg' } )
-        //     setFile(file);
-        // });
         loadImage(
             e.target.files[0],
             function (img) {
@@ -114,12 +119,17 @@ function MediaCard(props) {
                 // Firefox supports PNG and JPEG. You could check img.src to
                 // guess the original format, but be aware the using "image/jpg"
                 // will re-encode the image.
-                var dataURL = canvas.toDataURL("image/png");
+                var dataURL = canvas.toDataURL();
                 let blob = dataURItoBlob(dataURL);
                 let file = new File( [blob], 'selfie.jpg', { type: 'image/jpeg' } )
+                resize(file, 1200, 1200, async function (resizedDataUrl) {
+                    let blob = dataURItoBlob(resizedDataUrl);
+                    let fileResize = new File( [blob], 'selfie.jpg', { type: 'image/jpeg' } )
+                    setFile(fileResize);
+                });
                 setFile(file);
             },
-            { maxWidth: 600, orientation: true} // Options
+            {orientation: true} // Options
         );
         
     }
@@ -183,7 +193,8 @@ function MediaCard(props) {
                 "longitude": state.longitude,
                 "address": Object.values(userAddress).splice(1).join (" "),
                 "department": user.department,
-                "company": user.company
+                "company": user.company,
+                "healthStatus": health
             }));
             const rawResponse = await fetch(`${API_URL}/staff-locations`,{
                 method: 'POST',
@@ -198,7 +209,6 @@ function MediaCard(props) {
             } else {
                 return setOpen(true)
             }
-            return content;
         } else {
             alert('Data is not complete');
             setLoading(false);
@@ -236,6 +246,20 @@ function MediaCard(props) {
                 <Typography gutterBottom variant="h5" component="h2">
                     <strong>{user.firstName + ' ' + user.lastName}</strong>
                 </Typography>
+                <FormControl variant="outlined" className={classes.formControl} fullWidth size="small" >
+                    <InputLabel id="demo-simple-select-outlined-label">Health Status</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        value={health}
+                        onChange={handleChangeHealth}
+                        label="Health Status"
+                    >
+                        {healths.map((health, index) => (
+                        <MenuItem value={health} key={index}>{health}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
                 <Typography variant="body2" color="textSecondary" component="p">
                     Address: <strong>{Object.values(userAddress).splice(1).join (" ")}</strong>
                     <br />

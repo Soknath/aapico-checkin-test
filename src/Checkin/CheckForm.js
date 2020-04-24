@@ -38,8 +38,9 @@ const styles = theme => ({
       margin: theme.spacing(2),
     },
     large: {
-      width: theme.spacing(10),
-      height: theme.spacing(10)
+      width: '80px',
+      height: '80px',
+      boxShadow: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)'
     }
   });
 
@@ -67,10 +68,10 @@ const navRightStyle = {
 
 const todayListStyle = {
   position: 'absolute',
-  top: 105,
+  top: 130,
   right: 0,
-  padding: '10px',
-  height: 100
+  padding: '0px',
+  boxShadow: '0 19px 38px rgba(0,0,0,0.30)'
 };
 
 class CheckForm extends React.Component {
@@ -117,7 +118,8 @@ class CheckForm extends React.Component {
   };
 
   _updateViewport = (viewport) => {
-    this.setState({viewport});
+    viewport.zoom=14 //Whatever zoom level you want
+    this.setState({ viewport })
   }
 
   openDrawer = () => {
@@ -143,7 +145,7 @@ class CheckForm extends React.Component {
           }
           {...viewport}
           width="100%"
-          height={'calc(100vh - 120px)'}
+          height={'calc(100vh - 110px)'}
           mapStyle={this.state.language ==='en'?
             "https://search.map.powermap.in.th/api/v2/map/vtile/styles?name=thailand_en&access_token=b378c575291af30a29f59919fd7e7e4c012d45c4"
             :"https://search.map.powermap.in.th/api/v2/map/vtile/styles?name=thailand_th&access_token=b378c575291af30a29f59919fd7e7e4c012d45c4"
@@ -157,7 +159,6 @@ class CheckForm extends React.Component {
           positionOptions={{enableHighAccuracy: false}}
           trackUserLocation={true}
           onViewportChange={this._updateViewport}
-          fitBoundsOptions={{maxZoom: 15}}
         />
         <div style={navStyle}>
           <NavigationControl showCompass={false}/>
@@ -184,7 +185,7 @@ class CheckForm extends React.Component {
         <Alert onClose={() => this.setState({alert:false})} severity="error">
           Please make sure you have created your profile — <strong>Profile not found!</strong>
         </Alert></Snackbar>
-        <Grid container justify="center" className={classes.checkinButton}>
+        <Grid container justify="center" className={classes.checkinButton} >
           <IconButton onClick={()=> {
             if(user){
               history.push({
@@ -192,9 +193,9 @@ class CheckForm extends React.Component {
             } else {
               this.setState({alert: true})
             }
-          }}
+          }} 
           >
-            <Avatar alt="Checkin" src="/aapico-checkin/images/Button.png" className={classes.large} />
+            <Avatar rounded circle alt="Checkin" src="/aapico-checkin/images/Button.png" className={classes.large} />
           </IconButton>
         </Grid>
         <div style={todayListStyle}>

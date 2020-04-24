@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import PeopleIcon from '@material-ui/icons/People';
+// import PeopleIcon from '@material-ui/icons/People';
 import RoomIcon from '@material-ui/icons/Room';
-import HomeWorkIcon from '@material-ui/icons/HomeWork';
+// import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import SettingsIcon from '@material-ui/icons/Settings';
 // import Loading from './Loading';
-
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import CardView from './Checkin/CardView';
 import CheckForm from './Checkin/CheckForm';
 import Employees from './Employee/employeeViews';
@@ -17,8 +17,6 @@ import CompanyDetails from './Company/companyDetails';
 import PersonalInfo from './Setting/PersonalInfo';
 import history from './history';
 import PWAPrompt from 'react-ios-pwa-prompt';
-import Tabletop from 'tabletop';
-import Loading from './Loading';
 
 const styles = theme => ({
   root: {
@@ -107,7 +105,7 @@ class TabView extends Component {
         {/* <BottomNavigationAction label="AAPICO" value="companies" icon={<HomeWorkIcon />}/>
         <BottomNavigationAction label="Employees" value="employees" icon={<PeopleIcon />} /> */}
         <BottomNavigationAction label="Check-in" value="checkin" icon={<RoomIcon />} />
-        <BottomNavigationAction label="Register" value="personalinfo" icon={<SettingsIcon />} />
+        <BottomNavigationAction label="Register" value="personalinfo" icon={<PersonAddIcon />} />
       </BottomNavigation>
       <PWAPrompt promptOnVisit={1} timesToShow={3} copyClosePrompt="Close" permanentlyHideOnDismiss={false}/>
       </>

@@ -107,8 +107,8 @@ export default function DenseAppBar(props) {
             <ChevronLeftIcon />
           </IconButton>
         :null}
-          <img src="/aapico-checkin/images/Logo4.png" height="42" />
-          <Button id="setup_button" onClick={()=>installApp()}>Installer</Button>
+        <img src="/aapico-checkin/images/Logo4.png" height="42" />
+        <Button id="setup_button" onClick={()=>installApp()}>Installer</Button>
         {props.company?
           <div className={classes.rightSwitch}>
           <FormControlLabel
