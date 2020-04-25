@@ -185,7 +185,6 @@ function MediaCard(props) {
                 "empID": user.empID,
                 "lastName": user.lastName,
                 "firstName": user.firstName,
-                "birthday": new Date(user.birthday),
                 "tel": user.tel,
                 "email": user.email,
                 "gender": user.gender,
@@ -210,8 +209,14 @@ function MediaCard(props) {
                 return setOpen(true)
             }
         } else {
-            alert('Data is not complete');
-            setLoading(false);
+            if (!file) {
+                alert('Picture not found.');
+                setLoading(false);
+            }
+            else {
+                alert('Location not found.');
+                setLoading(false);
+            }
         }
     }
 
@@ -265,9 +270,8 @@ function MediaCard(props) {
                     <br />
                     ID: {user.empID} | Tel: {user.tel} 
                     <br />
-                    Gender: {user.gender} | Birthday: {new Date(user.birthday).toLocaleDateString()}
-                    <br />
                     Email: {user.email}
+                    <br />
                 </Typography>
                 </CardContent>
             </CardActionArea>

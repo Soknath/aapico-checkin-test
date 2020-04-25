@@ -29,8 +29,7 @@ const schema = yup.object().shape({
   lastName: yup.string().required(),
   tel: yup.string().matches(phoneRegExp, 'Phone number is not valid'),
   email: yup.string().email(),
-  empID: yup.string().required(),
-  birthday: yup.string().required()
+  empID: yup.string().required()
 });
 
 const formLabelsTheme = createMuiTheme({
@@ -69,14 +68,13 @@ function Register(props) {
     email: '',
     gender: 'male',
     empID: '',
-    birthday: new Date(),
     department: '',
     company: 'AITS'
   }});
   const { classes } = props;
   
   // The first commit of Material-UI
-  const [selectedDate, setSelectedDate] = React.useState(user?user.birthday:new Date());
+  // const [selectedDate, setSelectedDate] = React.useState(user?user.birthday:new Date());
   const [company, setCompany] = React.useState("AITS");
   const [alert, setAlert] = React.useState(false);
 
@@ -88,9 +86,9 @@ function Register(props) {
       setAlert(true)
     }
   }
-  const handleDateChange = date => {
-    setSelectedDate(date);
-  };
+  // const handleDateChange = date => {
+  //   setSelectedDate(date);
+  // };
   const handleChange = company => {
     setCompany(company.target.value);
   };
@@ -221,7 +219,7 @@ function Register(props) {
           type="text" name="empID" control={control}/>
       </Grid> 
       <Grid item xs={6}>
-        <Controller as={
+        {/* <Controller as={
           <KeyboardDatePicker
             id="date-picker-dialog"
             label="Birthday"
@@ -235,7 +233,7 @@ function Register(props) {
             fullWidth
           />
           } 
-          name="birthday" defaultValue={selectedDate} control={control}/>
+          name="birthday" defaultValue={selectedDate} control={control}/> */}
       </Grid>
       <Grid container justify="flex-end" spacing={2}>
         <Grid item xs={6}>
