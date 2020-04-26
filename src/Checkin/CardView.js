@@ -94,7 +94,10 @@ function MediaCard(props) {
                 console.log(error)
             }
         }
-        if (state.latitude && state.longitude && !userAddress) fetchData();
+        
+        if (state.latitude && state.longitude && !userAddress){
+            fetchData();
+        }
     })
 
     const handleChangeHealth = health => {
@@ -175,6 +178,7 @@ function MediaCard(props) {
         return canvas.toDataURL("image/jpeg", quality);
     }
     
+    
     async function submitData () {
         // alert(JSON.stringify(user));
         setLoading(true)
@@ -245,6 +249,7 @@ function MediaCard(props) {
                     onChange={(event)=> { 
                         getPhoto(event) 
                     }}
+                    capture
                 />
                 <Divider />
                 <CardContent>
