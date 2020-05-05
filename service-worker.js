@@ -1,7 +1,7 @@
-importScripts("/aapico-checkin-test/precache-manifest.218fc15c64c16bfc1eab4d57fde19b62.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
+importScripts("/aapico-checkin-test/precache-manifest.f04b1f5e08708b0621a401fbf91ac822.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 console.log("Worker is working")
-var cacheName = 'firstVersion';
+var cacheName = 'Version';
 
 workbox.precaching.precacheAndRoute(self.__precacheManifest || [])
 

@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "/aapico-checkin-test/static/css/main.0484a416.chunk.css"
   },
   {
-    "revision": "be3b54a565980ea901736e72a1045fe7",
+    "revision": "d570c8421d95ac5843de1c86ab50ddf8",
     "url": "/aapico-checkin-test/index.html"
   }
 ];
