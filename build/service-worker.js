@@ -1,12 +1,18 @@
-importScripts("/aapico-checkin/precache-manifest.ade97e20137f28c282139a8cc930661a.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
+importScripts("/precache-manifest.106f3a32c52d9fea682fc1713a76c353.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 console.log("Worker is working")
+var cacheName = 'secondVersion';
 
 workbox.precaching.precacheAndRoute(self.__precacheManifest || [])
 
 self.addEventListener('install', event => {
   workbox.skipWaiting()
   workbox.clientsClaim()
+  caches.keys().then(cacheNames => {
+    cacheNames.forEach(cacheName => {
+      caches.delete(cacheName);
+    });
+  });
   console.log('install')
 })
 self.addEventListener('activate', event => {
@@ -16,35 +22,41 @@ self.addEventListener('activate', event => {
 workbox.routing.registerRoute(
   new RegExp('https:.*min\.(css|js|json)'),
   workbox.strategies.staleWhileRevalidate({
-    cacheName: 'cache'
+    cacheName
   })
 )
 
 workbox.routing.registerRoute(
   new RegExp('(http|https):.*\.(png|gif|jpg|jpeg|webp|svg)'),
   workbox.strategies.staleWhileRevalidate({
-    cacheName: 'images',
+    cacheName
   })
 );
+
+self.addEventListener('message', function (event) {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
 
 workbox.routing.registerRoute(
   new RegExp('https:.*?alt=json'),
   workbox.strategies.staleWhileRevalidate({
-    cacheName: 'google-sheet-cache'
+    cacheName
   })
 )
 
 workbox.routing.registerRoute(
   new RegExp('https://search\.map\.powermap\.in\.th/api/v2/map/vtile.*'),
   workbox.strategies.staleWhileRevalidate({
-    cacheName: 'map-cache'
+    cacheName
   })
 )
 
 workbox.routing.registerRoute(
   new RegExp('https://fonts\.googleapis\.com.*'),
   workbox.strategies.staleWhileRevalidate({
-    cacheName: 'font-cache'
+    cacheName
   })
 )
 
@@ -76,4 +88,6 @@ self.addEventListener('notificationclick', function (event) {
       })
   );
 });
+
+
 

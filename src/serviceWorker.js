@@ -21,6 +21,7 @@ const isLocalhost = Boolean(
 );
 
 export function register(config) {
+  // local
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // if ('serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
@@ -85,7 +86,7 @@ function registerValidSW(swUrl, config) {
               // It's the perfect time to display a
               // "Content is cached for offline use." message.
               console.log('Content is cached for offline use.');
-
+              registration.update();
               // Execute callback
               if (config && config.onSuccess) {
                 config.onSuccess(registration);

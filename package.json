@@ -52,7 +52,7 @@
     "eject": "react-app-rewired eject",
     "deploy": "npm run build && gh-pages -d build"
   },
-  "homepage": "https://soknath.github.com/aapico-checkin",
+  "homepage": "https://soknath.github.com/",
   "eslintConfig": {
     "extends": "react-app"
   },

@@ -85,11 +85,13 @@ function MediaCard(props) {
         return new Blob([ab], { type: 'image/jpeg' });
     }
 
+    // https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${state.latitude}&lon=${state.longitude}&accept-language=th
     useEffect( () => {
         async function fetchData() {
             try {
-                let address = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${state.latitude}&lon=${state.longitude}&accept-language=th`).then(res => res.json());
-                setUserAddress(address.address);
+                let address = await fetch(`http://search.map.powermap.in.th/api/v2/map/reverse_geocode?lat=${state.latitude}&lng=${state.longitude}&sort=d&&access_token=b378c575291af30a29f59919fd7e7e4c012d45c4`).then(res => res.json());
+                console.log(address);
+                setUserAddress(`${address.data[0].tambon_e}, ${address.data[0].amphoe_e}, ${address.data[0].province_e},  ${address.data[0].postcode}`);
             } catch (error) {
                 console.log(error)
             }
@@ -194,7 +196,7 @@ function MediaCard(props) {
                 "gender": user.gender,
                 "latitude": state.latitude,
                 "longitude": state.longitude,
-                "address": Object.values(userAddress).splice(1).join (" "),
+                "address": userAddress,
                 "department": user.department,
                 "company": user.company,
                 "healthStatus": health
@@ -271,7 +273,7 @@ function MediaCard(props) {
                     </Select>
                 </FormControl>
                 <Typography variant="body2" color="textSecondary" component="p">
-                    Address: <strong>{Object.values(userAddress).splice(1).join (" ")}</strong>
+                    Address: <strong>{userAddress}</strong>
                     <br />
                     ID: {user.empID} | Tel: {user.tel} 
                     <br />
@@ -281,10 +283,10 @@ function MediaCard(props) {
                 </CardContent>
             </CardActionArea>
             <CardActions style={{display: "flex", justifyContent: "space-between"}}>
-                <Button size="small" color="primary" onClick={() => history.goBack()} >
+                <Button size="small" color="primary" onClick={() => history.push('/checkin')} >
                 Go Back
                 </Button>
-                <Button size="small" color="primary" onClick={() => submitData()} >
+                <Button size="small" variant="contained" color="primary" onClick={() => submitData()} >
                 Submit
                 </Button>
             </CardActions>

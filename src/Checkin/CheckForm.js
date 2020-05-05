@@ -110,7 +110,7 @@ class CheckForm extends React.Component {
       viewport: {...this.state.viewport, 
         latitude: parseFloat(company.lat_lng.split(',')[0]),
         longitude: parseFloat(company.lat_lng.split(',')[1]),
-        zoom: 15,
+        zoom: 12,
         transitionInterpolator: new FlyToInterpolator({speed: 2}),
         transitionDuration: 'auto'
       }

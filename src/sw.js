@@ -1,10 +1,16 @@
 console.log("Worker is working")
+var cacheName = 'firstVersion';
 
 workbox.precaching.precacheAndRoute(self.__precacheManifest || [])
 
 self.addEventListener('install', event => {
   workbox.skipWaiting()
   workbox.clientsClaim()
+  caches.keys().then(cacheNames => {
+    cacheNames.forEach(cacheName => {
+      caches.delete(cacheName);
+    });
+  });
   console.log('install')
 })
 self.addEventListener('activate', event => {
@@ -14,35 +20,41 @@ self.addEventListener('activate', event => {
 workbox.routing.registerRoute(
   new RegExp('https:.*min\.(css|js|json)'),
   workbox.strategies.staleWhileRevalidate({
-    cacheName: 'cache'
+    cacheName
   })
 )
 
 workbox.routing.registerRoute(
   new RegExp('(http|https):.*\.(png|gif|jpg|jpeg|webp|svg)'),
   workbox.strategies.staleWhileRevalidate({
-    cacheName: 'images',
+    cacheName
   })
 );
+
+self.addEventListener('message', function (event) {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
 
 workbox.routing.registerRoute(
   new RegExp('https:.*?alt=json'),
   workbox.strategies.staleWhileRevalidate({
-    cacheName: 'google-sheet-cache'
+    cacheName
   })
 )
 
 workbox.routing.registerRoute(
   new RegExp('https://search\.map\.powermap\.in\.th/api/v2/map/vtile.*'),
   workbox.strategies.staleWhileRevalidate({
-    cacheName: 'map-cache'
+    cacheName
   })
 )
 
 workbox.routing.registerRoute(
   new RegExp('https://fonts\.googleapis\.com.*'),
   workbox.strategies.staleWhileRevalidate({
-    cacheName: 'font-cache'
+    cacheName
   })
 )
 
@@ -74,3 +86,5 @@ self.addEventListener('notificationclick', function (event) {
       })
   );
 });
+
+

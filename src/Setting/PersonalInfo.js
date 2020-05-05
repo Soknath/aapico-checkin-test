@@ -32,7 +32,9 @@ const schema = yup.object().shape({
   lastName: yup.string().required(),
   tel: yup.string().matches(phoneRegExp, 'Phone number is not valid'),
   email: yup.string().email(),
-  empID: yup.string().required()
+  empID: yup.string().required(),
+  department: yup.string().required(),
+  company: yup.string().required()
 });
 
 const formLabelsTheme = createMuiTheme({
@@ -62,7 +64,7 @@ const styles = theme => ({
 
 function Register(props) {
   let user = localStorage.getItem('user');
-  const { handleSubmit, errors, control } = useForm({validationSchema: schema,
+  const { handleSubmit, errors, control, setValue } = useForm({validationSchema: schema,
   defaultValues: user?JSON.parse(user):{
     firstName: '',
     lastName: '',
@@ -114,11 +116,12 @@ function Register(props) {
         fetchCompany();
     }
   },[])
-  console.log(companies);
+  console.log(errors);
   console.log(departments);
   console.log(company);
 
   const onSubmit = data => {
+    console.log(data);
     let saveData = { ...data, company, department};
     if(Object.keys(errors).length === 0){
       localStorage.setItem('user', JSON.stringify(saveData));
@@ -132,9 +135,12 @@ function Register(props) {
 
   const handleChangeCompany = company => {
     setCompany(company.target.value);
+    setDepartment("");
+    setValue("department", "")
   };
   const handleChangeDepartment = department => {
     setDepartment(department.target.value);
+    setValue("department", department.target.value)
   };
   
 
@@ -284,7 +290,8 @@ function Register(props) {
         </Grid>
           <Grid item xs={6}>
           <Controller as={
-              <FormControl variant="outlined" className={classes.formControl} fullWidth size="small" >
+              <FormControl 
+              required variant="outlined" className={classes.formControl} fullWidth size="small" >
                 <InputLabel id="demo-simple-select-outlined-label">Company</InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -304,7 +311,9 @@ function Register(props) {
         </Grid>
         <Grid item xs={6}>
           <Controller as={
-              <FormControl variant="outlined" className={classes.formControl} fullWidth size="small" >
+              <FormControl 
+              error={!!errors.email}
+              required variant="outlined" className={classes.formControl} fullWidth size="small" >
                 <InputLabel id="demo-simple-select-outlined-label">Department</InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -317,6 +326,7 @@ function Register(props) {
                     <MenuItem value={depart} key={index}>{depart}</MenuItem>
                   ))}
                 </Select>
+                {!!errors.department?<FormHelperText id="my-helper-text">{errors.department.message}</FormHelperText>:null}
               </FormControl>
             } 
             style={{marginTop: 16}}
@@ -326,7 +336,7 @@ function Register(props) {
         <Grid container justify="flex-end" spacing={2}>
           <Grid item>
               <Button type="submit" variant="contained" color={!user?"primary":"secondary"}
-              style={{ textTransform: "none" }}size="small" >{user?'EDIT':'SAVE'}</Button>
+              style={{ textTransform: "none" }}size="small" >{user?'UPDATE':'SAVE DATA'}</Button>
           </Grid>
         </Grid>
         {/* <input type="submit" /> */}
